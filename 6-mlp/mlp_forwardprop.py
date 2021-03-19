@@ -10,14 +10,23 @@ from random import random
 
 
 class MLP:
+    """A Multilayer Perceptron class.
+    """
 
-    def __init__(self, num_inputs=3, num_hidden=[3, 5], num_outputs=2):
+    def __init__(self, num_inputs=3, hidden_layers=[3, 5], num_outputs=2):
+        """Constructor for the MLP. Takes the number of inputs,
+            a variable number of hidden layers, and number of outputs
+        Args:
+            num_inputs (int): Number of inputs
+            hidden_layers (list): A list of ints for the hidden layers. Each int is the # of neurons in its layer.
+            num_outputs (int): Number of outputs
+        """
         self.num_inputs = num_inputs
-        self.num_hidden = num_hidden
+        self.hidden_layers = hidden_layers
         self.num_outputs = num_outputs
 
         # concatenate values into single list
-        layers = [self.num_inputs] + self.num_hidden + [self.num_outputs]
+        layers = [self.num_inputs] + self.hidden_layers + [self.num_outputs]
 
         # initiate random weights
         self.weights = []
@@ -63,6 +72,12 @@ class MLP:
         return activations
 
     def back_propagate(self, error, verbose=False):
+        """Backpropagates an error signal.
+        Args:
+            error (ndarray): The error to backprop.
+        Returns:
+            error (ndarray): The final error of the input
+        """
         # reversed because we need to go backwards
         # dE/dW_i = (y - a_[i+1]) s'(h_[i+1]) a_i
         # s'(h_[i+1]) = s(h_[i+1])(1 - s(h_[i+1])
@@ -91,12 +106,23 @@ class MLP:
         return error
 
     def gradient_descent(self, learning_rate):
+        """Learns by descending the gradient
+        Args:
+            learning_rate (float): How fast to learn.
+        """
         for i in range(len(self.weights)):
             weights = self.weights[i]
             derivatives = self.derivatives[i]
             weights -= derivatives * learning_rate
 
     def train(self, inputs, targets, epochs, learning_rate):
+        """Trains model running forward prop and backprop
+        Args:
+            inputs (ndarray): X
+            targets (ndarray): Y
+            epochs (int): Num. epochs we want to train the network for
+            learning_rate (float): Step to apply to gradient descent
+        """
         for i in range(epochs):
             sum_error = 0
             for (input, target) in zip(inputs, targets):
@@ -119,12 +145,31 @@ class MLP:
             print(f"Error: {sum_error / len(inputs)} at epoch {i}")
 
     def _mse(self, target, output):
+        """Mean Squared Error loss function
+        Args:
+            target (ndarray): The ground trut
+            output (ndarray): The predicted values
+        Returns:
+            (float): Output
+        """
         return np.average((output - target) ** 2)
 
     def _sigmoid_derivative(self, x):
+        """Sigmoid derivative function
+        Args:
+            x (float): Value to be processed
+        Returns:
+            y (float): Output
+        """
         return x * (1.0 - x)
 
     def _sigmoid(self, x):
+        """Sigmoid activation function
+        Args:
+            x (float): Value to be processed
+        Returns:
+            y (float): Output
+        """
         return 1 / (1 + np.exp(-x))
 
 
@@ -133,15 +178,17 @@ if __name__ == "__main__":
     inputs = np.array([[random() / 2 for _ in range(2)] for _ in range(1000)])  # array [[0.1, 0.2], [0.3, 0.4]...]
     targets = np.array([[i[0] + i[1]] for i in inputs])
 
-    # create an MLP
+    # create an MLP w/ one hidden layer of 5 neurons
     mlp = MLP(2, [5], 1)
 
-    # train our mlp
+    # train network
     mlp.train(inputs, targets, 50, 0.1)
 
-    # create dummy data and predict
+    # create dummy data
     input = np.array([0.3, 0.1])
     target = np.array([0.4])
+
+    # get prediction
     prediction = mlp.forward_propagate(input)
 
     print(f"Our network believes that {input[0]} + {input[1]} is equal to {prediction[0]}")

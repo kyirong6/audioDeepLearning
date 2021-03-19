@@ -16,6 +16,6 @@ his playlist: [Deep Learning (for Audio) with Python](https://www.youtube.com/pl
 An implementation of a single neuron.
 
 #### 6-mlp
-Implementing a multi layer perceptron and performing forward
-propagation with a sigmoid activation function.
+Implement a fully connected feed forward NN with training via back propagation + 
+gradient descent.
 

@@ -70,11 +70,15 @@ class MLP:
         for i in reversed(range(len(self.derivatives))):
             activations = self.activations[i+1]
             delta = error * self._sigmoid_derivative(activations)
+
             # ndarray([0.1, 0.2]) --> ndarray([[0.1, 0.2]]
             delta_reshaped = delta.reshape(delta.shape[0], -1).T
+
             current_activations = self.activations[i]
+
             # ndarray([0.1, 0.2]) --> ndarray([[0.1], [0.2]]
             current_activations_reshaped = current_activations.reshape(current_activations.shape[0], -1)
+
             self.derivatives[i] = np.dot(current_activations_reshaped, delta_reshaped)
             error = np.dot(delta, self.weights[i].T)
 
@@ -121,18 +125,19 @@ class MLP:
 
 
 if __name__ == "__main__":
-
     # create a dataset to train a network for the sum operation
-    inputs = np.array([[random() / 2 for _ in range(2)] for _ in range(1000)]) # array [[0.1, 0.2], [0.3, 0.4]...]
+    inputs = np.array([[random() / 2 for _ in range(2)] for _ in range(1000)])  # array [[0.1, 0.2], [0.3, 0.4]...]
     targets = np.array([[i[0] + i[1]] for i in inputs])
+
     # create an MLP
     mlp = MLP(2, [5], 1)
 
     # train our mlp
     mlp.train(inputs, targets, 50, 0.1)
 
-    # create dummy data for prediction
+    # create dummy data and predict
     input = np.array([0.3, 0.1])
     target = np.array([0.4])
     prediction = mlp.forward_propagate(input)
+
     print(f"Our network believes that {input[0]} + {input[1]} is equal to {prediction[0]}")

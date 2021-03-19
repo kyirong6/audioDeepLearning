@@ -94,7 +94,7 @@ class MLP:
         for i in range(len(self.weights)):
             weights = self.weights[i]
             derivatives = self.derivatives[i]
-            weights += derivatives * learning_rate
+            weights -= derivatives * learning_rate
 
     def train(self, inputs, targets, epochs, learning_rate):
         for i in range(epochs):
@@ -105,7 +105,7 @@ class MLP:
                 output = self.forward_propagate(input)
 
                 # calculate error
-                error = target - output
+                error = output - target
 
                 # back propagation
                 self.back_propagate(error)
@@ -119,7 +119,7 @@ class MLP:
             print(f"Error: {sum_error / len(inputs)} at epoch {i}")
 
     def _mse(self, target, output):
-        return np.average((target - output) ** 2)
+        return np.average((output - target) ** 2)
 
     def _sigmoid_derivative(self, x):
         return x * (1.0 - x)

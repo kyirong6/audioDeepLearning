@@ -64,7 +64,7 @@ class MLP:
 
     def back_propagate(self, error, verbose=False):
         # reversed because we need to go backwards
-        # dE/dW_i = (y - a_[a+1]) s'(h_[i+1]) a_i
+        # dE/dW_i = (y - a_[i+1]) s'(h_[i+1]) a_i
         # s'(h_[i+1]) = s(h_[i+1])(1 - s(h_[i+1])
         # s(h_[i+1]) = a_[i+1]
         for i in reversed(range(len(self.derivatives))):
@@ -79,7 +79,11 @@ class MLP:
             # ndarray([0.1, 0.2]) --> ndarray([[0.1], [0.2]]
             current_activations_reshaped = current_activations.reshape(current_activations.shape[0], -1)
 
+            # save derivative after applying matrix multiplication
             self.derivatives[i] = np.dot(current_activations_reshaped, delta_reshaped)
+
+            # back propagate error to calculate next set of weights. derivative of weights of preceeding layer
+            # depends on this so we pass it backwards so we dont have to re calculate.
             error = np.dot(delta, self.weights[i].T)
 
             if verbose:

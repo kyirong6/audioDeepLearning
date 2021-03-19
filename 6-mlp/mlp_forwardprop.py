@@ -1,4 +1,5 @@
 import numpy as np
+from random import random
 
 # save activations and derivatives
 # implement backpropagation
@@ -81,6 +82,36 @@ class MLP:
                 print(f"Derivatives for W{i}: {self.derivatives[i]}")
         return error
 
+    def gradient_descent(self, learning_rate):
+        for i in range(len(self.weights)):
+            weights = self.weights[i]
+            derivatives = self.derivatives[i]
+            weights += derivatives * learning_rate
+
+    def train(self, inputs, targets, epochs, learning_rate):
+        for i in range(epochs):
+            sum_error = 0
+            for (input, target) in zip(inputs, targets):
+
+                # forward propagation
+                output = self.forward_propagate(input)
+
+                # calculate error
+                error = target - output
+
+                # back propagation
+                self.back_propagate(error)
+
+                # apply gradient descent
+                self.gradient_descent(learning_rate)
+
+                sum_error += self._mse(target, output)
+
+            # report error for each epoch
+            print(f"Error: {sum_error / len(inputs)} at epoch {i}")
+
+    def _mse(self, target, output):
+        return np.average((target - output) ** 2)
 
     def _sigmoid_derivative(self, x):
         return x * (1.0 - x)
@@ -90,20 +121,18 @@ class MLP:
 
 
 if __name__ == "__main__":
+
+    # create a dataset to train a network for the sum operation
+    inputs = np.array([[random() / 2 for _ in range(2)] for _ in range(1000)]) # array [[0.1, 0.2], [0.3, 0.4]...]
+    targets = np.array([[i[0] + i[1]] for i in inputs])
     # create an MLP
     mlp = MLP(2, [5], 1)
 
-    # create some inputs
-    input = np.array([0.1, 0.2])
-    target = np.array([0.3])
+    # train our mlp
+    mlp.train(inputs, targets, 50, 0.1)
 
-    # perform forward prop
-    output = mlp.forward_propagate(input)
-
-    # calculate error
-    error = target - output
-
-    # back propagation
-    mlp.back_propagate(error, verbose=True)
-
-    # print results
+    # create dummy data for prediction
+    input = np.array([0.3, 0.1])
+    target = np.array([0.4])
+    prediction = mlp.forward_propagate(input)
+    print(f"Our network believes that {input[0]} + {input[1]} is equal to {prediction[0]}")

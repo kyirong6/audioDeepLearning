@@ -4,7 +4,7 @@ import math
 import json
 
 DATASET_PATH = "genre_dataset_reduced"
-JSON_PATH = "data.json"
+JSON_PATH = "data_10.json"
 
 SAMPLE_RATE = 2250
 DURATION = 30 # measured in seconds

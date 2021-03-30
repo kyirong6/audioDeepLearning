@@ -9,6 +9,7 @@ scikit-learn = "*"
 tensorflow = "*"
 librosa = "*"
 matplotlib = "*"
+ffmpeg = "*"
 
 [dev-packages]
 

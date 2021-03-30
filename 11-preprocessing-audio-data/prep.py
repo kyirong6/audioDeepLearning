@@ -2,11 +2,12 @@ import librosa, librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
 
-file = "blues.00000.wav"
+# file = "blues.00000.wav"
+file = "BohemianRhapsody.wav"
 
 # waveform
 signal, sr = librosa.load(file, sr=22050)  # signalArray = sr * T = 22050 * 30s (30s length of song)
-# librosa.display.waveplot(signal, sr=sr)
+# librosa.display.waveplot(signalw, sr=sr)
 # plt.xlabel("Time")
 # plt.ylabel("Amplitude")
 # plt.show()
@@ -58,3 +59,4 @@ plt.xlabel("Time")
 plt.ylabel("MFCC")
 plt.colorbar()
 plt.show()
+plt.savefig("BohemianRhapsody-MFCC-plot")
